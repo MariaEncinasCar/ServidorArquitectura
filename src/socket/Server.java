@@ -8,8 +8,6 @@ package socket;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import blackboard.Blackboard;
-import control.Control;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,11 +30,9 @@ public class Server {
         
         ServerSocket ss = new ServerSocket(7777);
         
-
         while (true) {
             System.out.println("ServerSocket awaiting connections...");
             Socket socket = ss.accept(); // blocking call, this will wait until a connection is attempted on this port.
-            System.out.println("Connection from " + socket + "!");
             
             ClientHandler clietntHandler = new ClientHandler(socket);
             clientes.add(clietntHandler);
@@ -44,8 +40,6 @@ public class Server {
             pool.execute(clietntHandler);
         }
         
-
-        
     }
-
+    
 }

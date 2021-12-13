@@ -10,7 +10,8 @@ package dao;
  * @author Zarith
  */
 public class ControlDAO {
-     private UsuarioDAO usuario;
+    private UsuarioDAO usuario;
+    private PublicacionDAO publicacion;
     
     public UsuarioDAO getUsuarioDAO() {
         if(usuario!=null){
@@ -18,6 +19,15 @@ public class ControlDAO {
         }else{
             usuario = new UsuarioDAO();
             return usuario;
+        }
+    }
+    
+    public PublicacionDAO getPublicacionDAO() {
+        if(publicacion!=null){
+            return publicacion;
+        }else{
+            publicacion = new PublicacionDAO();
+            return publicacion;
         }
     }
 }

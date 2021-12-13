@@ -37,6 +37,7 @@ public class UsuarioDAO implements UsuarioInterface {
             em.getTransaction().commit();
         }   
         
+        
         return mensaje;
     }
     
@@ -96,9 +97,6 @@ public class UsuarioDAO implements UsuarioInterface {
         TypedQuery query = em.createQuery(jpql, Usuario.class);
                 
         query.setParameter("email", "%" + usuario.getEmail()+ "%");
-//        query.setParameter("nombre", "%" + usuario.getNombre()+ "%");
-//        query.setParameter("celular", "%" + usuario.getCelular()+ "%");
-//        query.setParameter("id_usuario", "%" + usuario.getId() + "%");
         
         Object use = query.getSingleResult();
         
@@ -110,16 +108,16 @@ public class UsuarioDAO implements UsuarioInterface {
     public Usuario iniciarSesionEmail(String email, String contrasena) {
         em.getTransaction().begin();
 
-        String jpql = "SELECT v FROM Usuario v WHERE v.email = :email AND "
-                + "v.contrasena = :contrasena";
+        String jpql = "SELECT v FROM Usuario v WHERE v.email LIKE :email AND "
+                + "v.contrasena LIKE :contrasena";
 
         TypedQuery query = em.createQuery(jpql, Usuario.class);
 
-        query.setParameter("email",email );
-        query.setParameter("contrasena", contrasena);
-
+        query.setParameter("email", "%" + email + "%");
+        query.setParameter("contrasena", "%" + contrasena + "%");
+        
         try {
-            em.getTransaction().commit();
+            em.getTransaction().commit();    
             return (Usuario) query.getSingleResult();
         } catch (NoResultException e) {
             return null;
@@ -130,8 +128,8 @@ public class UsuarioDAO implements UsuarioInterface {
     public Usuario inciarSesionCelular(String celular, String contrasena) {
         em.getTransaction().begin();
 
-        String jpql = "SELECT v FROM Usuario v WHERE v.celular = :celular AND "
-                + "v.contrasena = :contrasena";
+        String jpql = "SELECT v FROM Usuario v WHERE v.celular LIKE :celular AND "
+                + "v.contrasena LIKE :contrasena";
 
         TypedQuery query = em.createQuery(jpql, Usuario.class);
 

@@ -8,6 +8,8 @@ package control;
 import agentes.FabricaAgentes;
 import blackboard.Blackboard;
 import com.google.gson.Gson;
+import java.util.List;
+import modelo.Publicacion;
 import modelo.Usuario;
 
 /**
@@ -17,7 +19,7 @@ import modelo.Usuario;
 public class Control {
     
     private final Blackboard blackboard;
-    FabricaAgentes f=new FabricaAgentes();
+    FabricaAgentes fabrica = new FabricaAgentes();
 
     public Control(Blackboard blckboard) {
         this.blackboard = blckboard;
@@ -34,8 +36,7 @@ public class Control {
 
             Usuario usuario = new Usuario();            
             usuario = gson.fromJson(u, Usuario.class);
-
-            String registro = f.getrAgenteUsuario().registrarUsuario(usuario);
+            String registro = fabrica.getrAgenteUsuario().registrarUsuario(usuario);
 
             if(registro.equalsIgnoreCase("si")){
                 mensaje = blackboard.getJson();
@@ -44,31 +45,61 @@ public class Control {
         else if(accion.equals("ini")) {
             u = blackboard.getJson().substring(3, blackboard.getJson().length()); 
             Usuario usuario = gson.fromJson(u, Usuario.class);
+            System.out.println("Usuario " + usuario);
             Usuario s = null;
             if (usuario.getCelular() == null) {
-                s = f.getrAgenteUsuario().iniciarSesionEmail(usuario.getEmail(),
+                s = fabrica.getrAgenteUsuario().iniciarSesionEmail(usuario.getEmail(),
                         usuario.getContrasena());
+                if(s!=null){
+                    List<Publicacion> publicacionesUsuario=null;
+                    s.setPublicacionList(publicacionesUsuario);
+                }  
             }
             else if (usuario.getEmail() == null) {
-                s = f.getrAgenteUsuario().inciarSesionCelular(usuario.getCelular(),
+                s = fabrica.getrAgenteUsuario().inciarSesionCelular(usuario.getCelular(),
                         usuario.getContrasena());
+                
+                if(s!=null){
+                    List<Publicacion> publicacionesUsuario=null;
+                    s.setPublicacionList(publicacionesUsuario);
+                }  
             }
-
+            
             mensaje = gson.toJson(s);
             
         }
         else if(accion.equals("act")){
             u = blackboard.getJson().substring(3, blackboard.getJson().length()); 
             Usuario usuario = gson.fromJson(u, Usuario.class);
-            Usuario usuariobd = f.getrAgenteUsuario().consultarUsuario(usuario);
+            Usuario usuariobd = fabrica.getrAgenteUsuario().consultarUsuario(usuario);
             
             usuariobd.setNombre(usuario.getNombre());
             usuariobd.setFechaNac(usuario.getFechaNac());
             usuariobd.setEdad(usuario.getEdad());
             usuariobd.setSexo(usuario.getSexo());
                        
-            f.getrAgenteUsuario().actualizarUsuario(usuariobd);
+            fabrica.getrAgenteUsuario().actualizarUsuario(usuariobd);
             
+        }
+        else if(accion.equals("ppu")){
+            u = blackboard.getJson().substring(3, blackboard.getJson().length());
+            System.out.println(u);
+            Publicacion publicacion = gson.fromJson(u, Publicacion.class);
+            System.out.println(publicacion);
+
+            Usuario usuariobd = fabrica.getrAgenteUsuario().consultarUsuario(publicacion.getUsuario());
+            publicacion.setUsuario(usuariobd);
+
+            fabrica.getrAgentePublicacion().guardarPublicacion(publicacion);
+        }
+        else if(accion.equalsIgnoreCase("opu")){
+            List<Publicacion> publicacionesUsuario=null;
+            
+            List<Publicacion> publicaciones = fabrica.getrAgentePublicacion().consultarPublicacion("");
+            for (int i = 0; i < publicaciones.size(); i++) {
+                publicaciones.get(i).getUsuario().setPublicacionList(publicacionesUsuario);
+            }
+            mensaje = gson.toJson(publicaciones);
         }
 
         return mensaje; 

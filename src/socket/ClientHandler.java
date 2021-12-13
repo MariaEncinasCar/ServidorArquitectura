@@ -24,8 +24,8 @@ public class ClientHandler implements Runnable {
 
     public ClientHandler(Socket socket) throws IOException {
         this.socket = socket;
-        this.flujoEntradaDatos = new ObjectInputStream(socket.getInputStream());
-        this.flujoSalidaDatos = new ObjectOutputStream(socket.getOutputStream());
+        this.flujoEntradaDatos = new ObjectInputStream(this.socket.getInputStream());
+        this.flujoSalidaDatos = new ObjectOutputStream(this.socket.getOutputStream());
     }
 
     @Override
@@ -37,6 +37,8 @@ public class ClientHandler implements Runnable {
 
                 // read the list of messages from the socket
                 jsonAtrapa = (String) flujoEntradaDatos.readObject();
+                
+                System.out.println("Recibe: " + jsonAtrapa);
 
                 if (jsonAtrapa.equalsIgnoreCase("terminar")) {
                     break;
@@ -46,6 +48,8 @@ public class ClientHandler implements Runnable {
                 Control control = new Control(blackboard);
 
                 envia = control.getAgente();
+                
+                System.out.println("Enviar: " + envia);
 
                 flujoSalidaDatos.writeObject(envia);
 
@@ -53,14 +57,15 @@ public class ClientHandler implements Runnable {
 
             }
         } catch (IOException | ClassNotFoundException ex) {
-            System.out.println(ex);
+            System.err.println(ex);
         } finally {
             try {
                 System.out.println("Closing sokets from server side.");
                 flujoEntradaDatos.close();
                 flujoSalidaDatos.close();
+                socket.close();
             } catch (IOException ex1) {
-                System.out.println(ex1);
+                System.err.println(ex1);
             }
         }
     }

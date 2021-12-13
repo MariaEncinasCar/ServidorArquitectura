@@ -11,6 +11,7 @@ package agentes;
  */
 public class FabricaAgentes {
     private AgenteUsuario agUsuario;
+    private AgentePublicacion agPublicacion;
     
     public AgenteUsuario getrAgenteUsuario() {
         if(agUsuario!=null){
@@ -18,6 +19,15 @@ public class FabricaAgentes {
         }else{
             agUsuario = new AgenteUsuario();
             return agUsuario;
+        }
+    }
+    
+    public AgentePublicacion getrAgentePublicacion() {
+        if(agPublicacion!=null){
+            return agPublicacion;
+        }else{
+            agPublicacion = new AgentePublicacion();
+            return agPublicacion;
         }
     }
 }

@@ -7,11 +7,14 @@ package modelo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -51,7 +54,7 @@ public class Usuario implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
-    private int id;
+     int id;
 
     public int getId() {
         return id;
@@ -138,6 +141,17 @@ public class Usuario implements Serializable {
     public void setEdad(int edad) {
         this.edad = edad;
     }
+    
+    @OneToMany(mappedBy = "Usuario", cascade = CascadeType.ALL)
+    private List<Publicacion> publicacionList;
+
+    public List<Publicacion> getPublicacionList() {
+        return publicacionList;
+    }
+
+    public void setPublicacionList(List<Publicacion> publicacionList) {
+        this.publicacionList = publicacionList;
+    }
 
     @Override
     public int hashCode() {
@@ -161,9 +175,7 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "Usuario{" + "id=" + id + ", nombre=" + nombre + ", email=" + email + ", contrasena=" + contrasena + ", celular=" + celular + ", sexo=" + sexo + ", fechaNac=" + fechaNac + ", edad=" + edad + '}';
+        return "Usuario{" + "id=" + id + ", nombre=" + nombre + ", email=" + email + ", contrasena=" + contrasena + ", celular=" + celular + ", sexo=" + sexo + ", fechaNac=" + fechaNac + ", edad=" + edad + ", publicacionList=" + publicacionList + '}';
     }
 
-    
-    
 }

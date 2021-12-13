@@ -5,8 +5,8 @@
  */
 package interfaces;
 
-import dominio.Publicacion;
-import java.util.List;
+import modelo.Publicacion;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,10 +14,10 @@ import java.util.List;
  */
 public interface PublicacionInterface {
     
-    public void guardarPublicacion(Publicacion publicacion);
+    public String guardarPublicacion(Publicacion publicacion);
     
     public void eliminarPublicacion(Publicacion publicacion);
     
-    public List<Publicacion> consultarPublicacion(String etiqueta); 
+    public ArrayList<Publicacion> consultarPublicacion(String etiqueta); 
     
 }

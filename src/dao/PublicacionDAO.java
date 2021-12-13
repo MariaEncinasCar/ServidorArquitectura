@@ -5,9 +5,16 @@
  */
 package dao;
 
-import dominio.Publicacion;
 import interfaces.PublicacionInterface;
+import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import modelo.Publicacion;
 
 /**
  *
@@ -15,9 +22,18 @@ import java.util.List;
  */
 public class PublicacionDAO implements PublicacionInterface{
 
+    EntityManagerFactory emFactory = Persistence
+            .createEntityManagerFactory("faceboot_ServidorPU");
+    EntityManager em = emFactory.createEntityManager();
+    
     @Override
-    public void guardarPublicacion(Publicacion publicacion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public String guardarPublicacion(Publicacion publicacion) {
+        String mensaje = "no";
+        em.getTransaction().begin();
+        em.persist(publicacion);
+        mensaje = "si";
+        em.getTransaction().commit();
+        return mensaje;
     }
 
     @Override
@@ -26,8 +42,22 @@ public class PublicacionDAO implements PublicacionInterface{
     }
 
     @Override
-    public List<Publicacion> consultarPublicacion(String etiqueta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ArrayList<Publicacion> consultarPublicacion(String etiqueta) {
+        ArrayList<Publicacion> lista;
+        em.getTransaction().begin();
+        CriteriaQuery criteria = em.getCriteriaBuilder().createQuery();
+        criteria.select(criteria.from(Publicacion.class));
+        Query query = em.createQuery(criteria);
+        List<Publicacion> sl = query.getResultList();
+        lista = new ArrayList(sl);
+       
+        try {
+            em.getTransaction().commit();
+            System.out.println();
+            return lista;
+        } catch (NoResultException e) {
+            return null;
+        }
     }
     
 }
